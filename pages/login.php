@@ -1,4 +1,8 @@
-<?php require_once '../db/db_connect.php' ?>
+<?php 
+require_once '../db/db_connect.php';
+require_once('../controller/login_ctrl.php');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,35 +15,42 @@
 </head>
 
 <body>
-    <!-- Container for page content -->
+    <!-- Contenedor para el contenido de la página -->
     <div class="container">
-        <!-- Row for content, centered -->
+        <!-- Fila para el contenido, centrado -->
         <div class="row justify-content-center mt-5">
-            <!-- Column with a width of 5 for medium-sized screens -->
+            <!-- Columna con un ancho de 5 para pantallas medianas -->
             <div class="col-md-5">
-                <!-- Card container -->
+                <!-- Contenedor de la tarjeta -->
                 <div class="card">
-                    <!-- Card body -->
+                    <!-- Cuerpo de la tarjeta -->
                     <div class="card-body">
-                        <!-- Login form -->
-                        <form method="post">
+                        <!-- Formulario de inicio de sesión -->
+                        <form method="post" action="../controller/login_ctrl.php">
                             <div>
-                                <!-- Username input -->
+                                <!-- Campo de entrada para el nombre de usuario -->
                                 <label for="fromLocation" class="form-label">Nombre de Usuario</label>
-                                <input type="text" class="form-control" id="fromLocation" name="username"
-                                    placeholder="Usuario">
+                                <input type="text" class="form-control" id="fromLocation" name="name" placeholder="Usuario">
 
-                                <!-- Password input -->
+                                <!-- Campo de entrada para la contraseña -->
                                 <label class="form-label">Contraseña</label>
                                 <input type="password" class="form-control" name="password" placeholder="Contraseña">
 
-                                <!-- Link to registration page -->
+                                <!-- Enlace a la página de registro -->
                                 <p class="pUser"> ¿No tiene cuenta? <a href="register.php">Regístrese aquí</a></p>
 
-                                <!-- Button to submit login -->
+                                <!-- Botón para enviar el formulario de inicio de sesión -->
                                 <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
                             </div>
                         </form>
+
+                        <?php
+                        // Mostrar mensaje de error si existe
+                        if (isset($_SESSION['error'])) {
+                            echo '<div class="alert alert-danger mt-3">' . $_SESSION['error'] . '</div>';
+                            unset($_SESSION['error']);
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

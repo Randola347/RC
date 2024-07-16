@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-07-2024 a las 02:29:48
+-- Tiempo de generación: 16-07-2024 a las 22:09:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `online_store`
 --
+CREATE DATABASE IF NOT EXISTS `online_store` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `online_store`;
 
 -- --------------------------------------------------------
 
@@ -41,7 +43,28 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `last_name`, `phone`, `email`, `password`) VALUES
-(0, 'Cristopher', 'Matus Salas', '+506 86074258', 'cristophermatus9@gmail.com', '$2y$10$R/cIIkjIKiMccjL8yBfy9O3TpOX3nOQQZqbfXiiPl361Eud7gZCjW');
+(1, 'Randall', 'Madrigal', '83229420', 'lpperezo84@gmail.com', '123'),
+(2, 'Matus', 'Salas', '83362667', 'chavalaluis30@gmail.com', '123');
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
