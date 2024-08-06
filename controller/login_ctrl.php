@@ -31,9 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($user) {
         // Autenticación exitosa
+        $_SESSION['loggedin'] = true;
         $_SESSION['id'] = $user['id'];
         $_SESSION['name'] = $user['name'];
-        header('Location: ../pages/dashboard.php');
+        header('Location: ../pages/index.php');
         exit();
     } else {
         // Autenticación fallida

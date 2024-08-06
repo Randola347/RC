@@ -1,0 +1,12 @@
+.navbar .nav-item {
+    margin-left: 15px;
+}
+
+.navbar .cart-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.nav-link {
+    color: black !important;
+}

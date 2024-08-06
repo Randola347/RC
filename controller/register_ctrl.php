@@ -58,13 +58,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                       VALUES ('$name', '$lastname', '$phone', '$email', '$password')";
 
             if (mysqli_query($conn, $query)) {
-                // User registration successful message
-                $message = "<span style='color: green;'>Registro exitoso.</span>";
+                // Get the ID of the newly inserted user
+                $user_id = mysqli_insert_id($conn);
+
+                $_SESSION['loggedin'] = true;
+                $_SESSION['name'] = $_POST['name'];
+                header('Location: ../pages/index.php');
+                exit();
             } else {
                 $message = "<span style='color: red;'>Error al registrar al usuario: " . mysqli_error($conn) . "</span>";
             }
         }
     }
-
 }
-?>
