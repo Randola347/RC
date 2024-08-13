@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.cart-items {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.cart-item img {
+    width: 100px;
+    height: auto;
+}
+
+.cart-item h2 {
+    font-size: 1.2em;
+    flex: 1;
+    margin: 0 10px;
+}
+
+.cart-item p {
+    flex: 1;
+}
+
+.cart-total {
+    text-align: right;
+    font-size: 1.2em;
+    margin-top: 20px;
+}
+
+.cart-item a {
+    background: #ff0000;
+    color: #fff;
+    padding: 5px 10px;
+    text-decoration: none;
+}
+
+.cart-item form input {
+    width: 50px;
+    padding: 5px;
+}
+
+.cart-item form button {
+    background: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.cart-item form button:hover {
+    background: #555;
+}

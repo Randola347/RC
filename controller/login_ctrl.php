@@ -1,5 +1,4 @@
 <?php
-
 require_once '../db/db_connect.php';
 
 // Iniciar sesión si no está iniciada
@@ -7,8 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-function clean_input($data)
-{
+function clean_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
@@ -34,7 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['loggedin'] = true;
         $_SESSION['id'] = $user['id'];
         $_SESSION['name'] = $user['name'];
-        header('Location: ../pages/index.php');
+        
+        // Redirigir a la página de inicio
+        header("Location: ../pages/index.php");
         exit();
     } else {
         // Autenticación fallida
@@ -43,4 +43,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
 }
-?>

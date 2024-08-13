@@ -1,24 +1,27 @@
 <?php
-include '../includes/session_start.php';
 include '../db/db_connect.php';
+include '../includes/session_start.php';
+$search_query = $_GET['query'];
 
-$query = "SELECT * FROM products LIMIT 6";
-$result = $conn->query($query);
+$query = "SELECT * FROM products WHERE name LIKE ? OR description LIKE ?";
+$search_query_param = "%" . $search_query . "%";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("ss", $search_query_param, $search_query_param);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if ($result === false) {
-    die("Error en la consulta a la base de datos: " . $conn->error);
-}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Search Results</title>
     <link rel="stylesheet" href="../css/style_catalog.css">
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
+    <h1>Search Results for "<?php echo htmlspecialchars($search_query); ?>"</h1>
     <div class="product-list">
         <?php while ($row = $result->fetch_assoc()): ?>
             <div class="product-item">
@@ -26,11 +29,8 @@ if ($result === false) {
                 <h2><?php echo $row['name']; ?></h2>
                 <p><?php echo $row['description']; ?></p>
                 <p>$<?php echo $row['price']; ?></p>
-                <?php if (isset($_SESSION['name'])): ?>
-                    <a href="product_details.php?id=<?php echo $row['id']; ?>">Ver Detalles</a>
-                <?php else: ?>
-                    <a href="login.php">Ver Detalles</a>
-                <?php endif; ?>
+                <a href="product_details.php?id=<?php echo $row['id']; ?>">View Details</a>
+                <a href="../controller/add_to_cart.php?id=<?php echo $row['id']; ?>">Add to Cart</a>
             </div>
         <?php endwhile; ?>
     </div>
@@ -38,5 +38,6 @@ if ($result === false) {
 </html>
 
 <?php
+$stmt->close();
 $conn->close();
 ?>

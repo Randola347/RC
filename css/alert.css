@@ -1,0 +1,21 @@
+
+/* Success message styles */
+.success-message {
+    text-align: center;
+    margin-top: 50px;
+    color: green;
+}
+
+.success-message .login-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: green;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.success-message .login-link:hover {
+    background-color: darkgreen;
+}
