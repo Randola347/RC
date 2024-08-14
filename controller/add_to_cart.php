@@ -22,7 +22,9 @@ if (isset($_SESSION['cart'][$product_id])) {
     $_SESSION['cart'][$product_id] = $quantity;
 }
 
-// Devolver una respuesta de éxito (sin redirigir)
-echo "Product added to cart";
+// Calcular el total de productos en el carrito
+$total_items = array_sum($_SESSION['cart']);
+
+// Devolver el total de productos en el carrito como respuesta
+echo $total_items;
 exit();
-?>

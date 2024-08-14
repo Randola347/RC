@@ -35,7 +35,7 @@ if ($read_only_cart !== null) {
 }
 
 if (empty($cart)) {
-    echo "<p class='text-center'>Your cart is empty.</p>";
+    echo "<div class='container mt-5'><div class='alert alert-info text-center'>Your cart is empty.</div></div>";
     exit();
 }
 ?>
@@ -47,12 +47,13 @@ if (empty($cart)) {
     <title>Your Cart</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 </head>
 <body>
-    <div class="container mt-5">
-        <h1>Your Cart</h1>
-        <table class="table table-bordered">
-            <thead>
+    <div class="container mt-5 cart-container">
+        <h1 class="mb-4">Your Cart</h1>
+        <table class="table table-hover table-bordered">
+            <thead class="thead-dark">
                 <tr>
                     <th>Product</th>
                     <th>Price per unit</th>
@@ -93,16 +94,18 @@ if (empty($cart)) {
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="<?php echo $read_only ? '3' : '4'; ?>">Total Price</th>
+                    <th colspan="<?php echo $read_only ? '3' : '4'; ?>" class="text-right">Total Price</th>
                     <th>$<span id="cart-total"><?php echo number_format($total_price, 2); ?></span></th>
                 </tr>
             </tfoot>
         </table>
-        <?php if (!$read_only): ?>
-            <button class="btn btn-success" onclick="window.location.href='../controller/complete_purchase.php'">Complete Purchase</button>
-        <?php else: ?>
-            <button class="btn btn-secondary" onclick="window.location.href='profile.php'">Back to Profile</button>
-        <?php endif; ?>
+        <div class="text-right">
+            <?php if (!$read_only): ?>
+                <button class="btn btn-success" onclick="window.location.href='../controller/complete_purchase.php'">Complete Purchase</button>
+            <?php else: ?>
+                <button class="btn btn-secondary" onclick="window.location.href='profile.php'">Back to Profile</button>
+            <?php endif; ?>
+        </div>
     </div>
 
     <?php if (!$read_only): ?>
@@ -124,8 +127,6 @@ if (empty($cart)) {
                     totalPrice += parseFloat($(this).text());
                 });
                 $('#cart-total').text(totalPrice.toFixed(2));
-
-                // Opcional: Podrías enviar una solicitud AJAX para actualizar la cantidad en el servidor
             });
 
             // Eliminar un producto del carrito

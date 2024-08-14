@@ -1,61 +1,35 @@
-body {
-    font-family: Arial, sans-serif;
+
+.cart-container {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
 }
 
-.cart-items {
-    max-width: 800px;
-    margin: 0 auto;
+.table td, .table th {
+    vertical-align: middle;
 }
 
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
+.btn-danger {
+    transition: background-color 0.3s ease;
 }
 
-.cart-item img {
-    width: 100px;
-    height: auto;
+.btn-danger:hover {
+    background-color: #c82333;
 }
 
-.cart-item h2 {
-    font-size: 1.2em;
-    flex: 1;
-    margin: 0 10px;
+.btn-success {
+    transition: background-color 0.3s ease;
 }
 
-.cart-item p {
-    flex: 1;
+.btn-success:hover {
+    background-color: #218838;
 }
 
-.cart-total {
-    text-align: right;
-    font-size: 1.2em;
-    margin-top: 20px;
+.btn-secondary {
+    transition: background-color 0.3s ease;
 }
 
-.cart-item a {
-    background: #ff0000;
-    color: #fff;
-    padding: 5px 10px;
-    text-decoration: none;
-}
-
-.cart-item form input {
-    width: 50px;
-    padding: 5px;
-}
-
-.cart-item form button {
-    background: #333;
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-}
-
-.cart-item form button:hover {
-    background: #555;
+.btn-secondary:hover {
+    background-color: #5a6268;
 }

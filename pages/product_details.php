@@ -66,32 +66,44 @@ if (!$product) {
     </div>
 
     <script>
-        // Actualizar el precio total en función de la cantidad seleccionada
-        $(document).ready(function() {
-            $('#quantity').on('input', function() {
-                var pricePerUnit = parseFloat($('#price-per-unit').text());
-                var quantity = parseInt($(this).val());
-                var totalPrice = (pricePerUnit * quantity).toFixed(2);
-                $('#total-price').text(totalPrice);
-            });
+    $(document).ready(function() {
+        $('#quantity').on('input', function() {
+            var pricePerUnit = parseFloat($('#price-per-unit').text());
+            var quantity = parseInt($(this).val());
+            var totalPrice = (pricePerUnit * quantity).toFixed(2);
+            $('#total-price').text(totalPrice);
+        });
 
-            // Manejar el envío del formulario sin redirigir
-            $('#add-to-cart-form').on('submit', function(e) {
-                e.preventDefault(); // Prevenir la redirección
+        // Manejar el envío del formulario sin redirigir
+        $('#add-to-cart-form').on('submit', function(e) {
+            e.preventDefault(); // Prevenir la redirección
 
-                var quantity = $('#quantity').val();
+            var quantity = $('#quantity').val();
 
-                // Simular la adición al carrito (esto debería ser reemplazado por una llamada AJAX)
-                $.post('../controller/add_to_cart.php', {
-                    id: <?php echo $product_id; ?>,
-                    quantity: quantity
-                }, function(response) {
+            // Realizar la llamada AJAX para agregar al carrito
+            $.post('../controller/add_to_cart.php', {
+                id: <?php echo $product_id; ?>,
+                quantity: quantity
+            }, function(response) {
+                if (response !== 'Invalid request') {
                     // Mostrar mensaje de confirmación
                     $('#confirmation-message').fadeIn().delay(2000).fadeOut();
-                });
+
+                    // Actualizar el contador del carrito con el valor devuelto
+                    $('.cart-count').text(response);
+                    
+                    // Activar el enlace al carrito si hay al menos un producto
+                    if (parseInt(response) > 0) {
+                        $('.cart-icon').removeClass('disabled').attr('href', '../pages/cart.php');
+                    }
+                } else {
+                    alert('Error adding product to cart.');
+                }
             });
         });
-    </script>
+    });
+</script>
+
 
 </body>
 </html>
