@@ -19,6 +19,9 @@
                 <div class="card">
                     <!-- Card body -->
                     <div class="card-body">
+                        <!-- Imagen decorativa sobre los inputs -->
+                        <img src="../images/icon_register.webp" class="form-icon" alt="Icono de Usuario">
+                        
                         <!-- Registration form -->
                         <form method="post">
                             <!-- Display message -->

@@ -25,6 +25,9 @@ require_once('../controller/login_ctrl.php');
                 <div class="card">
                     <!-- Cuerpo de la tarjeta -->
                     <div class="card-body">
+                        <!-- Imagen decorativa sobre los inputs -->
+                        <img src="../images/icon_login.webp" class="form-icon" alt="Icono de Usuario">
+                        
                         <!-- Formulario de inicio de sesión -->
                         <form method="post" action="../controller/login_ctrl.php">
                             <div>
