@@ -1,4 +1,7 @@
 <?php
+?>
+
+<?php
 session_start();
 include '../db/db_connect.php';
 
@@ -23,6 +26,17 @@ if (!$product) {
     echo "Producto no encontrado.";
     exit();
 }
+
+// Definir la tasa de cambio de USD a CRC (Colones)
+$exchange_rate = 550; // Ejemplo de tasa de cambio
+
+// Definir el costo de envío por unidad
+$shipping_cost_per_unit = 1500; // Ejemplo de costo de envío por unidad en CRC
+
+// Convertir el precio a colones
+$price_colones = $product['price'] * $exchange_rate;
+$total_shipping_cost = $shipping_cost_per_unit; // Inicialmente para una sola unidad
+$total_price_colones = $price_colones + $total_shipping_cost;
 ?>
 
 <!DOCTYPE html>
@@ -45,21 +59,23 @@ if (!$product) {
             </div>
             <div class="col-md-6">
                 <p><?php echo htmlspecialchars($product['description']); ?></p>
-                <p>Price per unit: $<span id="price-per-unit"><?php echo htmlspecialchars($product['price']); ?></span></p>
-                <p>Total Price: $<span id="total-price"><?php echo htmlspecialchars($product['price']); ?></span></p>
+                <p>Precio: ₡<span id="price-colones"><?php echo number_format($price_colones, 2); ?></span></p>
+                <p>Talla: <?php echo htmlspecialchars($product['size']); ?></p>
+                <p>Costo de envío por unidad: ₡<span id="shipping-cost"><?php echo number_format($shipping_cost_per_unit, 2); ?></span></p>
+                <p>Total Precio (Incluido envío): ₡<span id="total-price"><?php echo number_format($total_price_colones, 2); ?></span></p>
 
                 <!-- Formulario para agregar al carrito -->
                 <form id="add-to-cart-form">
                     <div class="form-group">
-                        <label for="quantity">Quantity:</label>
+                        <label for="quantity">Cantidad:</label>
                         <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                    <button type="submit" class="btn btn-primary">Agregar al carrito</button>
                 </form>
 
                 <!-- Mensaje de confirmación -->
                 <div id="confirmation-message" class="alert alert-success mt-3" style="display: none;">
-                    Product added to cart!
+                    ¡Producto añadido al carrito!
                 </div>
             </div>
         </div>
@@ -68,10 +84,11 @@ if (!$product) {
     <script>
     $(document).ready(function() {
         $('#quantity').on('input', function() {
-            var pricePerUnit = parseFloat($('#price-per-unit').text());
+            var pricePerUnit = parseFloat(<?php echo $price_colones; ?>);
+            var shippingCostPerUnit = parseFloat(<?php echo $shipping_cost_per_unit; ?>);
             var quantity = parseInt($(this).val());
-            var totalPrice = (pricePerUnit * quantity).toFixed(2);
-            $('#total-price').text(totalPrice);
+            var totalPrice = (pricePerUnit * quantity) + (shippingCostPerUnit * quantity);
+            $('#total-price').text(totalPrice.toFixed(2));
         });
 
         // Manejar el envío del formulario sin redirigir
@@ -97,13 +114,12 @@ if (!$product) {
                         $('.cart-icon').removeClass('disabled').attr('href', '../pages/cart.php');
                     }
                 } else {
-                    alert('Error adding product to cart.');
+                    alert('Error al agregar el producto al carrito.');
                 }
             });
         });
     });
-</script>
-
+    </script>
 
 </body>
 </html>

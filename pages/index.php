@@ -8,6 +8,9 @@ $result = $conn->query($query);
 if ($result === false) {
     die("Error en la consulta a la base de datos: " . $conn->error);
 }
+
+// Definir la tasa de cambio de USD a CRC (Colones)
+$exchange_rate = 550; // Ejemplo de tasa de cambio
 ?>
 
 <!DOCTYPE html>
@@ -20,12 +23,24 @@ if ($result === false) {
 <body>
     <?php include '../includes/header.php'; ?>
     <div class="product-list">
-        <?php while ($row = $result->fetch_assoc()): ?>
+        <?php while ($row = $result->fetch_assoc()): 
+            // Calcular el precio en colones y formatear ambos precios
+            $price_usd = number_format($row['price'], 2, '.', '');
+            $price_colones = number_format($row['price'] * $exchange_rate, 0, '', '');
+            
+            // Limitar a 5 dígitos el precio en colones y dólares
+            if (strlen($price_usd) > 5) {
+                $price_usd = substr($price_usd, 0, 5);
+            }
+            if (strlen($price_colones) > 5) {
+                $price_colones = substr($price_colones, 0, 5);
+            }
+        ?>
             <div class="product-item">
                 <img src="../images/<?php echo $row['image']; ?>" alt="<?php echo $row['name']; ?>">
                 <h2><?php echo $row['name']; ?></h2>
                 <p><?php echo $row['description']; ?></p>
-                <p>$<?php echo $row['price']; ?></p>
+                <p>$<?php echo $price_usd; ?> | ₡<?php echo $price_colones; ?></p>
                 <?php if (isset($_SESSION['name'])): ?>
                     <a href="product_details.php?id=<?php echo $row['id']; ?>">Ver Detalles</a>
                 <?php else: ?>
@@ -34,9 +49,12 @@ if ($result === false) {
             </div>
         <?php endwhile; ?>
     </div>
+    
 </body>
 </html>
 
 <?php
 $conn->close();
 ?>
+
+s
