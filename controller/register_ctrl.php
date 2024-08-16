@@ -1,6 +1,4 @@
 <?php
-require_once '../db/db_connect.php';
-
 session_start();
 
 // Variable para almacenar mensajes
@@ -20,15 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name_pattern = '/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/';
     $phone_pattern = '/^[0-9\s+]+$/';
 
-    // Función para verificar si el teléfono no tiene caracteres especiales
     function validatePhone($phone) {
-        // Solo números y el símbolo más (+)
         return preg_match('/^[0-9\s+]+$/', $phone);
     }
 
-    // Función para verificar si el nombre y apellido son solo letras y espacios
     function validateName($name) {
-        // Solo letras y espacios, incluyendo caracteres en español
         return preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $name);
     }
 
@@ -44,34 +38,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif ($password != $confirm_password) {
         $message = "<span style='color: red;'>Las contraseñas no coinciden.</span>";
     } else {
-        // Verificar si el correo electrónico o número de teléfono ya existen en la base de datos
-        $query = "SELECT * FROM users WHERE email = '$email' OR phone = '$phone'";
-        $result = mysqli_query($conn, $query);
+        $file_path = '../controller/users.json';
 
-        if (mysqli_num_rows($result) > 0) {
-            $message = "<span style='color: red;'>Ya existe un usuario con el mismo correo electrónico o número de teléfono.</span>";
-        } else {
-            // Insertar el usuario en la base de datos
-            $query = "INSERT INTO users (name, last_name, phone, email, password) 
-                      VALUES ('$name', '$lastname', '$phone', '$email', '$password')";
+        // Leer el archivo JSON existente
+        $users = json_decode(file_get_contents($file_path), true);
 
-            if (mysqli_query($conn, $query)) {
-                // Obtener el ID del usuario recién insertado
-                $user_id = mysqli_insert_id($conn);
-
-                // Configurar todas las variables de sesión necesarias
-                $_SESSION['loggedin'] = true;
-                $_SESSION['id'] = $user_id; // Almacenar el ID del usuario en la sesión
-                $_SESSION['name'] = $name; // Almacenar el nombre del usuario en la sesión
-                $_SESSION['email'] = $email; // Almacenar el correo electrónico del usuario en la sesión
-
-                // Redirigir al usuario a la página principal
-                header('Location: ../pages/index.php');
-                exit();
-            } else {
-                $message = "<span style='color: red;'>Error al registrar al usuario: " . mysqli_error($conn) . "</span>";
+        // Verificar si el correo electrónico o número de teléfono ya existen
+        foreach ($users as $user) {
+            if ($user['email'] === $email || $user['phone'] === $phone) {
+                $message = "<span style='color: red;'>Ya existe un usuario con el mismo correo electrónico o número de teléfono.</span>";
+                exit;
             }
         }
+
+        // Asignar un nuevo ID
+        $new_id = empty($users) ? 1 : end($users)['id'] + 1;
+
+        // Crear un nuevo usuario
+        $new_user = [
+            "id" => $new_id,
+            "name" => $name,
+            "lastname" => $lastname,
+            "phone" => $phone,
+            "email" => $email,
+            "password" => $password
+        ];
+
+        // Agregar el nuevo usuario al array y guardar en el archivo JSON
+        $users[] = $new_user;
+        file_put_contents($file_path, json_encode($users, JSON_PRETTY_PRINT));
+
+        // Autenticar al usuario y redirigir
+        $_SESSION['loggedin'] = true;
+        $_SESSION['id'] = $new_id;
+        $_SESSION['name'] = $name;
+        header('Location: ../pages/index.php');
+        exit();
     }
 }
 ?>

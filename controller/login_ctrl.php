@@ -1,10 +1,5 @@
 <?php
-require_once '../db/db_connect.php';
-
-// Iniciar sesión si no está iniciada
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
 
 function clean_input($data) {
     $data = trim($data);
@@ -13,19 +8,25 @@ function clean_input($data) {
     return $data;
 }
 
-function authenticate($name, $password, $conn) {
-    $stmt = $conn->prepare('SELECT id, name FROM users WHERE name = ? AND password = ?');
-    $stmt->bind_param('ss', $name, $password);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->fetch_assoc();
+function authenticate($name, $password) {
+    $file_path = '../controller/users.json';
+    
+    // Leer el archivo JSON y decodificarlo
+    $users = json_decode(file_get_contents($file_path), true);
+
+    foreach ($users as $user) {
+        if ($user['name'] === $name && $user['password'] === $password) {
+            return $user;
+        }
+    }
+    return false;
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = clean_input($_POST['name']);
     $password = clean_input($_POST['password']);
 
-    $user = authenticate($name, $password, $conn);
+    $user = authenticate($name, $password);
 
     if ($user) {
         // Autenticación exitosa
@@ -43,3 +44,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
 }
+?>

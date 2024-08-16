@@ -1,6 +1,5 @@
 <?php
 session_start();
-include '../db/db_connect.php';
 
 // Verificar si el usuario está autenticado
 if (!isset($_SESSION['id'])) {
@@ -10,15 +9,25 @@ if (!isset($_SESSION['id'])) {
 
 $user_id = $_SESSION['id'];
 
-// Obtener la información actual del usuario
-$query = "SELECT * FROM users WHERE id = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
-$stmt->close();
+// Leer el archivo JSON y obtener la información del usuario
+$users = json_decode(file_get_contents('../controller/users.json'), true);
 
-// Obtener el historial de compras del usuario
+$user = null;
+foreach ($users as $u) {
+    if ($u['id'] == $user_id) {
+        $user = $u;
+        break;
+    }
+}
+
+// Verificar si se encontró el usuario
+if (!$user) {
+    echo "Usuario no encontrado.";
+    exit();
+}
+
+// Suponiendo que el historial de compras aún esté en la base de datos, lo dejamos como está
+include '../db/db_connect.php';
 $query_orders = "SELECT * FROM orders WHERE user_id = ? ORDER BY date DESC";
 $stmt_orders = $conn->prepare($query_orders);
 $stmt_orders->bind_param("i", $user_id);
@@ -66,7 +75,7 @@ function clean_input($data) {
                     </div>
                     <div class="form-group">
                         <label for="last_name">Last Name:</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($user['last_name']); ?>" required>
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($user['lastname']); ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email:</label>
