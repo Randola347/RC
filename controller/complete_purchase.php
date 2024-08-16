@@ -10,21 +10,11 @@ if (!isset($_SESSION['id'])) {
 
 $user_id = $_SESSION['id'];
 $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
-$total = 0;
+$total = $_SESSION['total_amount'];
 
 if (empty($cart)) {
     echo "El carrito está vacío.";
     exit();
-}
-
-foreach ($cart as $product_id => $quantity) {
-    $query = "SELECT * FROM products WHERE id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $product_id);
-    $stmt->execute();
-    $product = $stmt->get_result()->fetch_assoc();
-    $total += $product['price'] * $quantity;
-    $stmt->close();
 }
 
 // Insertar la orden en la tabla de órdenes
@@ -46,8 +36,6 @@ foreach ($cart as $product_id => $quantity) {
 
 // Limpiar el carrito actual para permitir nuevas compras
 unset($_SESSION['cart']);
-
-header('Location: ../pages/profile.php');
 
 $stmt_order->close();
 $conn->close();
