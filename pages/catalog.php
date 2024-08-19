@@ -73,5 +73,4 @@ if ($result->num_rows === 0) {
 
 <?php
 $stmt->close();
-$conn->close();
 ?>
