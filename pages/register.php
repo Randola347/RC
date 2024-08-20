@@ -29,27 +29,27 @@
                             <div>
                                 <!-- Name input -->
                                 <label for="name" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="name" name="name" placeholder="Nombre">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="">
 
                                 <!-- Lastname input -->
                                 <label for="lastname" class="form-label">Apellido</label>
-                                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Apellido">
+                                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="">
                                 
                                 <!-- Phone input -->
                                 <label for="phone" class="form-label">Teléfono</label>
-                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Teléfono">
+                                <input type="text" class="form-control" id="phone" name="phone" placeholder="">
 
                                 <!-- Email input -->
                                 <label for="email" class="form-label">Correo</label>
-                                <input type="text" class="form-control" id="email" name="email" placeholder="email">
+                                <input type="text" class="form-control" id="email" name="email" placeholder="">
 
                                 <!-- Password input -->
                                 <label class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" name="password" placeholder="Contraseña">
+                                <input type="password" class="form-control" name="password" placeholder="">
 
                                 <!-- Confirm Password input -->
                                 <label class="form-label">Confirmar Contraseña</label>
-                                <input type="password" class="form-control" name="confirm_password" placeholder="Confirmar Contraseña">
+                                <input type="password" class="form-control" name="confirm_password" placeholder="">
 
                                 <!-- Link to login page -->
                                 <p class="pUser"> ¿Ya tiene cuenta? <a href="login.php">Iniciar sesión</a></p>
