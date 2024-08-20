@@ -39,7 +39,7 @@ if ($result->num_rows === 0) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Catalog</title>
+    <title>Catálogo</title>
     <link rel="stylesheet" href="../css/style_catalog.css">
 </head>
 <body>

@@ -44,7 +44,7 @@ if (empty($cart)) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Your Cart</title>
+    <title>Su Carrito</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Incluir el SDK de PayPal -->
@@ -52,16 +52,16 @@ if (empty($cart)) {
 </head>
 <body>
     <div class="container mt-5 cart-container">
-        <h1 class="mb-4">Your Cart</h1>
+        <h1 class="mb-4">Su Carrito</h1>
         <table class="table table-hover table-bordered">
             <thead class="thead-dark">
                 <tr>
-                    <th>Product</th>
-                    <th>Price per unit</th>
-                    <th>Quantity</th>
+                    <th>Producto</th>
+                    <th>Precio por unidad</th>
+                    <th>Cantidad</th>
                     <th>Total</th>
                     <?php if (!$read_only): ?>
-                        <th>Action</th>
+                        <th>Acción</th>
                     <?php endif; ?>
                 </tr>
             </thead>
@@ -95,7 +95,7 @@ if (empty($cart)) {
                         <td>₡<span class="total-price"><?php echo htmlspecialchars($total_item_price_display); ?></span></td>
                         <?php if (!$read_only): ?>
                             <td>
-                                <button class="btn btn-danger remove-item" data-product-id="<?php echo $product_id; ?>">Remove</button>
+                                <button class="btn btn-danger remove-item" data-product-id="<?php echo $product_id; ?>">Eliminar</button>
                             </td>
                         <?php endif; ?>
                     </tr>
@@ -103,7 +103,7 @@ if (empty($cart)) {
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="<?php echo $read_only ? '3' : '4'; ?>" class="text-right">Total Price</th>
+                    <th colspan="<?php echo $read_only ? '3' : '4'; ?>" class="text-right">Precio total</th>
                     <th>₡<span id="cart-total"><?php echo htmlspecialchars(rtrim(substr(number_format($total_price, 2), 0, -6), ',')); ?></span></th>
                 </tr>
             </tfoot>
@@ -114,7 +114,7 @@ if (empty($cart)) {
                 <div id="paypal-button-container"></div>
                 <button class="btn btn-success" onclick="window.location.href='../controller/complete_purchase.php'" style="display: none;">Complete Purchase</button>
             <?php else: ?>
-                <button class="btn btn-secondary" onclick="window.location.href='profile.php'">Back to Profile</button>
+                <button class="btn btn-secondary" onclick="window.location.href='profile.php'">Volver al perfil</button>
             <?php endif; ?>
         </div>
     </div>

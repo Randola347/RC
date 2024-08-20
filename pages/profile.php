@@ -43,7 +43,7 @@ function clean_input($data) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Profile</title>
+    <title>Perfil</title>
     <link rel="stylesheet" href="../css/style_catalog.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -52,7 +52,7 @@ function clean_input($data) {
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h1>Profile</h1>
+                <h1>Perfil</h1>
                 
                 <!-- Mostrar mensajes de éxito o error -->
                 <?php if (isset($_SESSION['success_message'])): ?>
@@ -70,11 +70,11 @@ function clean_input($data) {
                 <!-- Formulario para Actualizar Información del Usuario -->
                 <form action="../controller/update_user_ctrl.php" method="post">
                     <div class="form-group">
-                        <label for="name">Name:</label>
+                        <label for="name">Nombre:</label>
                         <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($user['name']); ?>" required>
                     </div>
                     <div class="form-group">
-                        <label for="last_name">Last Name:</label>
+                        <label for="last_name">Apellido:</label>
                         <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($user['lastname']); ?>" required>
                     </div>
                     <div class="form-group">
@@ -82,22 +82,22 @@ function clean_input($data) {
                         <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Phone:</label>
+                        <label for="phone">Teléfono:</label>
                         <input type="text" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($user['phone']); ?>">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Update Information</button>
+                    <button type="submit" class="btn btn-primary btn-block">Actualizar información</button>
                 </form>
 
                 <!-- Historial de Compras -->
-                <h2 class="mt-5">Purchase History</h2>
+                <h2 class="mt-5">Historial de compras</h2>
                 <?php if ($orders->num_rows > 0): ?>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Order ID</th>
-                                <th>Date</th>
-                                <th>Total Amount</th>
-                                <th>Action</th>
+                                <th>ID de pedido</th>
+                                <th>Fecha</th>
+                                <th>Monto total</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,7 +105,7 @@ function clean_input($data) {
                                 <tr>
                                     <td><?php echo htmlspecialchars($order['id']); ?></td>
                                     <td><?php echo htmlspecialchars($order['date']); ?></td>
-                                    <td>$<?php echo number_format($order['total'], 2); ?></td>
+                                    <td>₡<?php echo number_format($order['total'], 2); ?></td>
                                     <td>
                                         <form method="post" action="cart.php">
                                             <input type="hidden" name="order_id" value="<?php echo htmlspecialchars($order['id']); ?>">
@@ -117,7 +117,7 @@ function clean_input($data) {
                         </tbody>
                     </table>
                 <?php else: ?>
-                    <p>You have no purchase history.</p>
+                    <p>No tienes historial de compras.</p>
                 <?php endif; ?>
             </div>
         </div>

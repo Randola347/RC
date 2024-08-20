@@ -17,7 +17,7 @@ $exchange_rate = 550; // Ejemplo de tasa de cambio
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Hogar</title>
     <link rel="stylesheet" href="../css/style_catalog.css">
 </head>
 <body>
