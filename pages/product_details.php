@@ -1,7 +1,4 @@
 <?php
-?>
-
-<?php
 session_start();
 include '../db/db_connect.php';
 
@@ -35,8 +32,7 @@ $shipping_cost_per_unit = 1500; // Ejemplo de costo de envío por unidad en CRC
 
 // Convertir el precio a colones
 $price_colones = $product['price'] * $exchange_rate;
-$total_shipping_cost = $shipping_cost_per_unit; // Inicialmente para una sola unidad
-$total_price_colones = $price_colones + $total_shipping_cost;
+$total_price_colones = $price_colones + $shipping_cost_per_unit; // Sumar el costo de envío al total inicial
 ?>
 
 <!DOCTYPE html>
@@ -59,10 +55,10 @@ $total_price_colones = $price_colones + $total_shipping_cost;
             </div>
             <div class="col-md-6">
                 <p><?php echo htmlspecialchars($product['description']); ?></p>
-                <p>Precio: ₡<span id="price-colones"><?php echo number_format($price_colones, 2); ?></span></p>
+                <p>Precio: ₡<span id="price-colones"></span></p>
                 <p>Talla: <?php echo htmlspecialchars($product['size']); ?></p>
-                <p>Costo de envío por unidad: ₡<span id="shipping-cost"><?php echo number_format($shipping_cost_per_unit, 2); ?></span></p>
-                <p>Total Precio (Incluido envío): ₡<span id="total-price"><?php echo number_format($total_price_colones, 2); ?></span></p>
+                <p>Costo de envío por unidad: ₡<span id="shipping-cost"></span></p>
+                <p>Total Precio (Incluido envío): ₡<span id="total-price"></span></p>
 
                 <!-- Formulario para agregar al carrito -->
                 <form id="add-to-cart-form">
@@ -82,34 +78,43 @@ $total_price_colones = $price_colones + $total_shipping_cost;
     </div>
 
     <script>
+    function truncatePrice(price, digitsToShow) {
+        let priceStr = price.toFixed(2).toString();
+        return priceStr.slice(0, digitsToShow);
+    }
+
     $(document).ready(function() {
-        $('#quantity').on('input', function() {
-            var pricePerUnit = parseFloat(<?php echo $price_colones; ?>);
-            var shippingCostPerUnit = parseFloat(<?php echo $shipping_cost_per_unit; ?>);
-            var quantity = parseInt($(this).val());
+        var pricePerUnit = parseFloat(<?php echo $price_colones; ?>);
+        var shippingCostPerUnit = parseFloat(<?php echo $shipping_cost_per_unit; ?>);
+
+        function updatePrices() {
+            var quantity = parseInt($('#quantity').val());
             var totalPrice = (pricePerUnit * quantity) + (shippingCostPerUnit * quantity);
-            $('#total-price').text(totalPrice.toFixed(2));
+
+            $('#price-colones').text(truncatePrice(pricePerUnit, -6));
+            $('#shipping-cost').text(truncatePrice(shippingCostPerUnit, -2)); // Mostrar costo de envío por unidad
+            $('#total-price').text(truncatePrice(totalPrice, -6)); // Mostrar total de precio incluido el costo de envío
+        }
+
+        $('#quantity').on('input', function() {
+            updatePrices();
         });
 
-        // Manejar el envío del formulario sin redirigir
+        updatePrices(); // Inicializar con el valor por defecto
+
         $('#add-to-cart-form').on('submit', function(e) {
-            e.preventDefault(); // Prevenir la redirección
+            e.preventDefault();
 
             var quantity = $('#quantity').val();
 
-            // Realizar la llamada AJAX para agregar al carrito
             $.post('../controller/add_to_cart.php', {
                 id: <?php echo $product_id; ?>,
                 quantity: quantity
             }, function(response) {
                 if (response !== 'Invalid request') {
-                    // Mostrar mensaje de confirmación
                     $('#confirmation-message').fadeIn().delay(2000).fadeOut();
-
-                    // Actualizar el contador del carrito con el valor devuelto
                     $('.cart-count').text(response);
-                    
-                    // Activar el enlace al carrito si hay al menos un producto
+
                     if (parseInt(response) > 0) {
                         $('.cart-icon').removeClass('disabled').attr('href', '../pages/cart.php');
                     }

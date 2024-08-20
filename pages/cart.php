@@ -75,16 +75,24 @@ if (empty($cart)) {
                     $product = $stmt->get_result()->fetch_assoc();
                     $stmt->close();
 
-                    $total_item_price = $product['price'] * $quantity;
+                    // Convertir el precio unitario a colones
+                    $price_per_unit = $product['price'] * 550; // Ejemplo de tasa de cambio
+
+                    // Calcular el precio total por producto
+                    $total_item_price = $price_per_unit * $quantity;
                     $total_price += $total_item_price;
+
+                    // Truncar los últimos seis dígitos y quitar la última coma
+                    $price_per_unit_display = rtrim(substr(number_format($price_per_unit, 2), 0, -6), ',');
+                    $total_item_price_display = rtrim(substr(number_format($total_item_price, 2), 0, -6), ',');
                     ?>
                     <tr id="product-<?php echo $product_id; ?>">
                         <td><?php echo htmlspecialchars($product['name']); ?></td>
-                        <td>$<span class="price-per-unit"><?php echo htmlspecialchars($product['price']); ?></span></td>
+                        <td>₡<span class="price-per-unit" data-full-price="<?php echo $price_per_unit; ?>"><?php echo htmlspecialchars($price_per_unit_display); ?></span></td>
                         <td>
                             <input type="number" class="form-control quantity" data-product-id="<?php echo $product_id; ?>" value="<?php echo $quantity; ?>" min="1" <?php if ($read_only) echo 'disabled'; ?>>
                         </td>
-                        <td>$<span class="total-price"><?php echo number_format($total_item_price, 2); ?></span></td>
+                        <td>₡<span class="total-price"><?php echo htmlspecialchars($total_item_price_display); ?></span></td>
                         <?php if (!$read_only): ?>
                             <td>
                                 <button class="btn btn-danger remove-item" data-product-id="<?php echo $product_id; ?>">Remove</button>
@@ -96,7 +104,7 @@ if (empty($cart)) {
             <tfoot>
                 <tr>
                     <th colspan="<?php echo $read_only ? '3' : '4'; ?>" class="text-right">Total Price</th>
-                    <th>$<span id="cart-total"><?php echo number_format($total_price, 2); ?></span></th>
+                    <th>₡<span id="cart-total"><?php echo htmlspecialchars(rtrim(substr(number_format($total_price, 2), 0, -6), ',')); ?></span></th>
                 </tr>
             </tfoot>
         </table>
@@ -118,18 +126,22 @@ if (empty($cart)) {
             $('.quantity').on('input', function() {
                 var quantity = $(this).val();
                 var productId = $(this).data('product-id');
-                var pricePerUnit = parseFloat($(this).closest('tr').find('.price-per-unit').text());
+                var pricePerUnit = parseFloat($(this).closest('tr').find('.price-per-unit').data('full-price'));
                 var totalItemPrice = (pricePerUnit * quantity).toFixed(2);
-                
+
+                // Truncar los últimos seis dígitos y quitar la última coma
+                var totalItemPriceDisplay = totalItemPrice.slice(0, -6).replace(/,$/, '');
+
                 // Actualizar el precio total del item
-                $(this).closest('tr').find('.total-price').text(totalItemPrice);
+                $(this).closest('tr').find('.total-price').text(totalItemPriceDisplay);
 
                 // Recalcular el precio total del carrito
                 var totalPrice = 0;
                 $('.total-price').each(function() {
-                    totalPrice += parseFloat($(this).text());
+                    totalPrice += parseFloat($(this).text().replace(',', ''));
                 });
-                $('#cart-total').text(totalPrice.toFixed(2));
+                var totalPriceDisplay = totalPrice.toFixed(2).slice(0, -6).replace(/,$/, '');
+                $('#cart-total').text(totalPriceDisplay);
             });
 
             // Eliminar un producto del carrito
@@ -150,9 +162,10 @@ if (empty($cart)) {
                             // Recalcular el precio total del carrito después de la eliminación
                             var totalPrice = 0;
                             $('.total-price').each(function() {
-                                totalPrice += parseFloat($(this).text());
+                                totalPrice += parseFloat($(this).text().replace(',', ''));
                             });
-                            $('#cart-total').text(totalPrice.toFixed(2));
+                            var totalPriceDisplay = totalPrice.toFixed(2).slice(0, -6).replace(/,$/, '');
+                            $('#cart-total').text(totalPriceDisplay);
 
                             // Si el carrito está vacío, redirigir al index.php
                             if ($('.total-price').length === 0) {
@@ -171,7 +184,7 @@ if (empty($cart)) {
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: '<?php echo $total_price; ?>' // Total del carrito
+                                value: $('#cart-total').text() // Total del carrito
                             }
                         }]
                     });
@@ -183,7 +196,7 @@ if (empty($cart)) {
                     });
                 },
                 onError: function (err) {
-                    alert("Ocurrio un error en el proceso.");
+                    alert("Ocurrió un error en el proceso.");
                 }
             }).render('#paypal-button-container'); // Renderizar el botón de PayPal en el contenedor especificado
         });
