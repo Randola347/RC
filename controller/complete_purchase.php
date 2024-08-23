@@ -10,6 +10,13 @@ if (!isset($_SESSION['id'])) {
 
 $user_id = $_SESSION['id'];
 $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+
+// Verificar si el total de la compra está definido y no es cero
+if (!isset($_SESSION['total_amount']) || $_SESSION['total_amount'] <= 0) {
+    echo "No se pudo obtener el total de la compra o el total es 0.";
+    exit();
+}
+
 $total = $_SESSION['total_amount'];
 
 if (empty($cart)) {
@@ -17,11 +24,19 @@ if (empty($cart)) {
     exit();
 }
 
+// Verificación para depuración - para asegurarse de que el total no sea 0
+var_dump($total); // Debe mostrar el total calculado en la página anterior
+
 // Insertar la orden en la tabla de órdenes
 $query_order = "INSERT INTO orders (user_id, date, total) VALUES (?, NOW(), ?)";
 $stmt_order = $conn->prepare($query_order);
 $stmt_order->bind_param("id", $user_id, $total);
 $stmt_order->execute();
+
+if ($stmt_order->affected_rows === 0) {
+    echo "Hubo un error al insertar la orden.";
+    exit();
+}
 
 $order_id = $stmt_order->insert_id;
 
@@ -36,7 +51,10 @@ foreach ($cart as $product_id => $quantity) {
 
 // Limpiar el carrito actual para permitir nuevas compras
 unset($_SESSION['cart']);
+unset($_SESSION['total_amount']); // Limpiar también el total
 
 $stmt_order->close();
 $conn->close();
+
+header('Location: ../pages/profile.php');
 ?>

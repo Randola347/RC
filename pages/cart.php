@@ -38,6 +38,30 @@ if (empty($cart)) {
     header('Location: ../pages/index.php'); // Redirigir a la página principal si el carrito está vacío
     exit();
 }
+
+// Calcular el precio total y almacenarlo en la sesión
+$_SESSION['total_amount'] = 0;
+foreach ($cart as $product_id => $quantity) {
+    $query = "SELECT * FROM products WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $product = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    // Convertir el precio unitario a colones
+    $price_per_unit = $product['price'] * 550; // Ejemplo de tasa de cambio
+
+    // Calcular el precio total por producto
+    $total_item_price = $price_per_unit * $quantity;
+    $total_price += $total_item_price;
+
+    // Acumular el total en la sesión
+    $_SESSION['total_amount'] += $total_item_price;
+}
+
+// Truncar los últimos seis dígitos y quitar la última coma para mostrar en pantalla
+$display_total_price = rtrim(substr(number_format($total_price, 2), 0, -6), ',');
 ?>
 
 <!DOCTYPE html>
@@ -68,21 +92,7 @@ if (empty($cart)) {
             <tbody>
                 <?php foreach ($cart as $product_id => $quantity): ?>
                     <?php
-                    $query = "SELECT * FROM products WHERE id = ?";
-                    $stmt = $conn->prepare($query);
-                    $stmt->bind_param("i", $product_id);
-                    $stmt->execute();
-                    $product = $stmt->get_result()->fetch_assoc();
-                    $stmt->close();
-
-                    // Convertir el precio unitario a colones
-                    $price_per_unit = $product['price'] * 550; // Ejemplo de tasa de cambio
-
-                    // Calcular el precio total por producto
-                    $total_item_price = $price_per_unit * $quantity;
-                    $total_price += $total_item_price;
-
-                    // Truncar los últimos seis dígitos y quitar la última coma
+                    // Utiliza los datos calculados anteriormente
                     $price_per_unit_display = rtrim(substr(number_format($price_per_unit, 2), 0, -6), ',');
                     $total_item_price_display = rtrim(substr(number_format($total_item_price, 2), 0, -6), ',');
                     ?>
@@ -104,7 +114,7 @@ if (empty($cart)) {
             <tfoot>
                 <tr>
                     <th colspan="<?php echo $read_only ? '3' : '4'; ?>" class="text-right">Precio total</th>
-                    <th>₡<span id="cart-total"><?php echo htmlspecialchars(rtrim(substr(number_format($total_price, 2), 0, -6), ',')); ?></span></th>
+                    <th>₡<span id="cart-total"><?php echo htmlspecialchars($display_total_price); ?></span></th>
                 </tr>
             </tfoot>
         </table>
@@ -142,6 +152,9 @@ if (empty($cart)) {
                 });
                 var totalPriceDisplay = totalPrice.toFixed(2).slice(0, -6).replace(/,$/, '');
                 $('#cart-total').text(totalPriceDisplay);
+
+                // Actualizar la sesión con el nuevo total
+                <?php $_SESSION['total_amount'] = "<script>document.write(totalPrice)</script>"; ?>
             });
 
             // Eliminar un producto del carrito
@@ -171,6 +184,9 @@ if (empty($cart)) {
                             if ($('.total-price').length === 0) {
                                 window.location.href = '../pages/index.php';
                             }
+
+                            // Actualizar la sesión con el nuevo total
+                            <?php $_SESSION['total_amount'] = "<script>document.write(totalPrice)</script>"; ?>
                         } else {
                             alert('There was a problem removing the item from the cart.');
                         }
@@ -181,10 +197,15 @@ if (empty($cart)) {
             // Configurar PayPal
             paypal.Buttons({
                 createOrder: function(data, actions) {
+                    var totalCartPrice = parseFloat($('#cart-total').text().replace(',', ''));
+                    if (isNaN(totalCartPrice)) {
+                        alert('El total del carrito es inválido.');
+                        return;
+                    }
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: $('#cart-total').text() // Total del carrito
+                                value: (totalCartPrice / 550).toFixed(2)  // Convertir de colones a dólares y asegurar que esté en formato decimal
                             }
                         }]
                     });
